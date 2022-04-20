@@ -81,25 +81,3 @@ double det(const line& l1, const line& l2, const line& l3) {
     det -= a3 * b2 * c1 + a2 * b1 * c3 + a1 * b3 * c2;
     return det;
 }
-
-std::vector<dot> convex_hull(std::vector<line>& lines) {
-    std::vector<dot> dots;
-    for (int i = 0; i < lines.size(); ++i) {
-        for (int j = i + 1; j < lines.size(); ++j) {
-            if (intercept(lines[i], lines[j])) {
-                dot t = interception(lines[i], lines[j]);
-                bool flag = false;
-                for (int k = 0; k < lines.size(); ++k) {
-                    if (lines[k].into(t) < -eps) {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    dots.push_back(t);
-                }
-            }
-        }
-    }
-    return dots;
-}

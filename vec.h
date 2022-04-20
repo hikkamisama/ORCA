@@ -1,10 +1,12 @@
 #pragma once
+#include "dot.h"
 
 struct vec {
     double x, y;
     vec() = default;
     vec(double x1, double y1) : x(x1), y(y1) {}
     vec(const vec& v1): x(v1.x), y(v1.y) {}
+    vec(const dot& a, const dot& b) : x(b.x - a.x), y(b.y - a.y) {}
     double norm() const;
 };
 
@@ -40,4 +42,8 @@ std::ostream& operator<<(std::ostream& os, const vec& v) {
 std::istream& operator>>(std::istream& is, vec& v) {
     is >> v.x >> v.y;
     return is;
+}
+
+double mul_cos(vec& a, vec& b) {
+    return a.x * b.x + a.y * b.y;
 }
