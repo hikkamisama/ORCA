@@ -25,7 +25,7 @@ std::istream& operator>>(std::istream& is, line& l) {
 }
 
 std::ostream& operator<<(std::ostream& os, line& l) {
-    os << l.a << " " << l.b << " " << l.c;
+    os << l.a << "x +" << l.b << "y +" << l.c;
     return os;
 }
 
