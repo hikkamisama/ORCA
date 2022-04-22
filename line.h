@@ -1,5 +1,5 @@
 #pragma once
-#include "dot.h"
+#include "vec.h"
 #include <iostream>
 #include <utility>
 #include <tuple>
@@ -9,14 +9,14 @@ struct line {
 
     line() = default;
     line (double a, double b, double c) : a(a), b(b), c(c) {};
-    line(const dot& A, const dot& B) {
+    line(const vec& A, const vec& B) {
         a = B.y - A.y;
         b = A.x - B.x;
         c = A.y * (B.x - A.x) - A.x * (B.y - A.y);
     }
     double tan_line() const;
     std::tuple<double, double, double> get() const;
-    double into(const dot& d) const;
+    double into(const vec& d) const;
 };
 
 std::istream& operator>>(std::istream& is, line& l) {
@@ -63,13 +63,13 @@ bool equal(const line& l1, const line& l2) {
     return (a1 * b2 == b1 * a2) && (a1 / a2 == c1 / c2);
 }
 
-dot interception(const line& l1, const line& l2) {
+vec interception(const line& l1, const line& l2) {
     double x = - ((l1.c * l2.b - l2.c * l1.b) / (l1.a * l2.b - l2.a * l1.b));
     double y = - ((l1.a * l2.c - l2.a * l1.c) /(l1.a * l2.b - l2.a * l1.b));
-    return dot(x, y);
+    return vec(x, y);
 }
 
-double line::into(const dot& d) const {
+double line::into(const vec& d) const {
     return a * d.x + b * d.y + c;
 }
 
