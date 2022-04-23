@@ -2,10 +2,11 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include <cassert>
 
 extern const double eps = 1e-4;
 extern double tau = 2;
-extern int all_time = 10000;
+extern int all_time = 1000;
 
 #include "geom.h"
 #include "agents.h"
@@ -19,6 +20,13 @@ void print() {
     for (int i = 0; i < agents.size(); ++i) {
         std::cout << "Agent " << i << ": at " << currs[i] << std::endl;
         std::cerr << "Circle " << currs[i].x << " " << currs[i].y << " " << agents[i].r << std::endl;
+    }
+    for (int i = 0; i < currs.size(); ++i) {
+        for (int j = i + 1; j < currs.size(); ++j) {
+            if ((currs[i] - currs[j]).norm() < agents[i].r + agents[j].r) {
+                assert(false);
+            }
+        }
     }
     std::cout << std::endl;
 }
@@ -53,6 +61,7 @@ int main() {
     std::cout << std::endl;
     int curr_time = 0;
     while (curr_time < all_time && !finished()) {
+        print();
         std::cout << "ITERATION №" << curr_time / 2 << std::endl;
         std::cout << std::endl;
         std::vector<vec> tmp_pos(n);
@@ -113,7 +122,6 @@ int main() {
         currs = tmp_pos;
         v_curr = new_vs;
         curr_time += 2;
-        print();
     }
     std::cout << "Finished at: " << curr_time << " " << finished() << std::endl;
     return 0;
