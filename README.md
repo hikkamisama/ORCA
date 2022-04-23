@@ -48,3 +48,10 @@ You may want to reload input and output, as the program dumps a lot of informati
     ./ORCA.out < input.txt > output.txt
     
 Information from **std::cerr** can be pasted to [this geometry widget](https://csacademy.com/app/geometry_widget/) to look at the paths
+
+
+## To do:
+
+1. Convex hull is built with a primitive O(n^2) algorithm, should improve to O(n)
+2. In case of dense conditions the algorithm fails almost certainly, should add deadlock solutions
+3. Should implement a normal visual interpreter, with colors and animation (using python)
