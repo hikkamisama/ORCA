@@ -9,7 +9,7 @@ struct agent {
 };
 
 std::ostream& operator<<(std::ostream& os, const agent& a) {
-    os << "AGENT: with thiccness: " << a.r << " with v_max: " << a.v_max;
+    os << "AGENT: with radius: " << a.r << " with v_max: " << a.v_max;
     return os;
 }
 

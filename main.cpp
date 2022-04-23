@@ -48,10 +48,13 @@ int main() {
         std::cin >> goals[i];
         std::cin >> currs[i];
         v_curr[i] = vec(0, 0);
-        std::cout << agents[i] << "; " << reached(i) << " " << finished() << std::endl;
+        std::cout << i << " " << agents[i] << std::endl;
     }
+    std::cout << std::endl;
     int curr_time = 0;
     while (curr_time < all_time && !finished()) {
+        std::cout << "ITERATION №" << curr_time / 2 << std::endl;
+        std::cout << std::endl;
         std::vector<vec> tmp_pos(n);
         std::vector<vec> new_vs(n);
         for (int i = 0; i < n; ++i) {
@@ -70,9 +73,10 @@ int main() {
                     v_curr[i] - v_curr[j]
                 );
                 line h_p = struct_half_plane(v_curr[i], u, n);
-                std::cout << "ORCA" << i << "|" << j << ": " << h_p << std::endl;
+                std::cout << "ORCA " << i << "|" << j << ": " << h_p << std::endl;
                 h_ps.push_back(h_p);
             }
+            std::cout << std::endl;
             // intersect all half planes
             // find distance to intersection
             vec v_ideal = vec(currs[i], goals[i]);
@@ -82,7 +86,7 @@ int main() {
             } else {
                 v_pref = normalize(v_ideal) * agents[i].v_max * tau;
             }
-            std::cout << "Agent " << i << " wants: " << v_ideal << " " << v_pref << "\n";
+            std::cout << "Agent " << i << " wants: " << v_pref << "\n";
             if (v_pref.norm() >= v_ideal.norm()) {
                 v_pref = v_ideal;
             }
@@ -99,7 +103,8 @@ int main() {
             } else {
                 v_new = v_pref;
             }
-            std::cout << "Agent " << i << " gets: " << v_new << "\n";
+            std::cout << "Agent " << i << " gets: " << v_new << std::endl;
+            std::cout << std::endl;
             new_vs[i] = v_new;
             tmp_pos[i] = currs[i] + v_new;
         }
@@ -110,6 +115,6 @@ int main() {
         curr_time += 2;
         print();
     }
-    std::cout << curr_time << " " << finished() << std::endl;
+    std::cout << "Finished at: " << curr_time << " " << finished() << std::endl;
     return 0;
 }
