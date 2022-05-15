@@ -15,7 +15,7 @@ In a **.txt** file, the following data is required for the algorithm:
    
     (for each agent): 
   
-    <radius> <max speed>
+    <num> <radius> <max speed>
     <goal x coordinate> <goal y coordinate>
     <starting x coordinate> <starting y coordinate>
 
