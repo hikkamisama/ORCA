@@ -4,16 +4,17 @@
 #include "circle.h"
 
 struct agent {
+    int num;
     double r;
     double v_max;
 };
 
 std::ostream& operator<<(std::ostream& os, const agent& a) {
-    os << "AGENT: with radius: " << a.r << " with v_max: " << a.v_max;
+    os << "AGENT №" << a.num << ": with radius: " << a.r << " with v_max: " << a.v_max;
     return os;
 }
 
 std::istream& operator>>(std::istream& is, agent& a) {
-    is >> a.r >> a.v_max;
+    is >> a.num >> a.r >> a.v_max;
     return is;
 }

@@ -14,9 +14,9 @@ VO find_cas(circle c, vec p) {
     double py = c.p.y - p.y;
     double r = c.r;
     double d = std::sqrt(px * px + py * py);
-    double r2 = std::sqrt(d * d - r * r);
+    double r2 = std::sqrt(std::max(d * d - r * r, 0.));
     double v = ((r2 * r2 - r * r) / d - d) / 2;
-    double h = std::sqrt(r * r - v * v);
+    double h = std::sqrt(std::max(r * r - v * v, 0.));
     vec o2o1(px, py);
     o2o1 = normalize(o2o1);
     vec ort0201(o2o1.y, -o2o1.x);

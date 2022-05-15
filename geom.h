@@ -20,6 +20,7 @@ bool inside_beams(const vec& v1, const vec& v2, const vec& to_check) {
 }
 
 vec proj_to_line(const line& l, const vec& v) {
+    assert(l.a != 0 || l.b != 0);
     double d = l.into(v);
     return vec(-l.a * d, -l.b * d) / (l.a * l.a + l.b * l.b);
 }
@@ -92,7 +93,11 @@ std::pair<vec, vec> find_v_n(const VO& vobs, const vec& v) {
     auto [flag1, to_first] = dot_to_beam(vobs.cas1, vobs.c1.p, v);
     auto [flag2, to_second] = dot_to_beam(vobs.cas2, vobs.c1.p, v);
     if (flag1 && flag2) {
-        u = normalize(v - vobs.c1.p) * vobs.c1.r + (vobs.c1.p - v);
+        if ((v - vobs.c1.p).norm() < eps) {
+            u = vobs.cas1 - v;
+        } else {
+            u = normalize(v - vobs.c1.p) * vobs.c1.r + (vobs.c1.p - v);
+        }
     } else {
         vec need = vobs.cas2;
         if (to_first.norm() <= to_second.norm()) {
@@ -101,12 +106,24 @@ std::pair<vec, vec> find_v_n(const VO& vobs, const vec& v) {
         auto [flag3, to_vo] = dot_to_beam(need, vec(0, 0), v);
         u = to_vo;
     }
-    n = normalize(u);
-    if (!inside_beams(vobs.cas1, vobs.cas2, v - vobs.c1.p)) {
-        vec p1(v + n);
-        vec p2(v - n);
-        if ((p1 - vobs.c1.p).norm() <= (p2 - vobs.c1.p).norm()) {
-            n = n * (-1);
+    if (u.norm() < eps) {
+        if (flag1 && flag2) {
+            n = normalize(v - vobs.c1.p);
+        } else {
+            if (to_first.norm() <= to_second.norm()) {
+                n = normalize(to_first * (-1));
+            } else {
+                n = normalize(to_second * (-1));
+            }
+       }
+    } else {
+        n = normalize(u);
+        if (!inside_beams(vobs.cas1, vobs.cas2, v - vobs.c1.p)) {
+            vec p1(v + n);
+            vec p2(v - n);
+            if ((p1 - vobs.c1.p).norm() <= (p2 - vobs.c1.p).norm()) {
+                n = n * (-1);
+            }
         }
     }
     return std::make_pair(u, n);
