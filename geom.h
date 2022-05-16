@@ -20,7 +20,6 @@ bool inside_beams(const vec& v1, const vec& v2, const vec& to_check) {
 }
 
 vec proj_to_line(const line& l, const vec& v) {
-    assert(l.a != 0 || l.b != 0);
     double d = l.into(v);
     return vec(-l.a * d, -l.b * d) / (l.a * l.a + l.b * l.b);
 }

@@ -5,7 +5,7 @@
 #include <cassert>
 #include <fstream>
 
-extern const double eps = 1e-4;
+extern const double eps = 1e-3;
 extern double tau = 5;
 extern int all_time = 300;
 extern double delta = 1;
@@ -93,8 +93,9 @@ void print(const frame& f) {
     }
     for (int i = 0; i < currs.size(); ++i) {
         for (int j = i + 1; j < currs.size(); ++j) {
-            if ((currs[i] - currs[j]).norm() < agents[i].r + agents[j].r - eps) {
-                assert(false);
+            if ((currs[i] - currs[j]).norm() < agents[i].r + agents[j].r - 4 * eps) {
+                std::cerr << i << " and " << j << " collided" << std::endl;
+                // assert(false);
             }
         }
     }
