@@ -15,7 +15,7 @@ In a **.txt** file, the following data is required for the algorithm:
    
     (for each agent): 
   
-    <radius> <max speed>
+    <num> <radius> <max speed>
     <goal x coordinate> <goal y coordinate>
     <starting x coordinate> <starting y coordinate>
 
@@ -37,21 +37,8 @@ Each **tau** seconds the movement is interrupted, and the following calculations
 
 4. Agents adopt new velocities and move to new positions
 
-## How to compile?
+## How to launch?
 
-The folowing line builds the project:
+Download this repository.
 
-    g++ main.cpp -std=c++17 -Wall -w -o ORCA.out
-    
-You may want to reload input and output, as the program dumps a lot of information to **std::cout** and to **std::cerr**:
-
-    ./ORCA.out < input.txt > output.txt
-    
-Information from **std::cerr** can be pasted to [this geometry widget](https://csacademy.com/app/geometry_widget/) to look at the paths
-
-
-## To do:
-
-1. Convex hull is built with a primitive O(n^2) algorithm, should improve to O(n)
-2. In case of dense conditions the algorithm fails almost certainly, should add deadlock solutions
-3. Should implement a normal visual interpreter, with colors and animation (using python)
+The bash script **sborka.sh** will gather all **.h** and **.cpp** executables together and prepare a **.out** binary file. It will also create **input.txt**, in which you should print input data in the format presented in section \"Input data\" (or paste any of my experiments, see file **experiments.md**). After this is done, invoke the script **zapusk.sh**. The algorithm will simulate agents' movement, and then a python script will prepare a gif with a visualization.
