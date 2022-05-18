@@ -21,6 +21,8 @@ In a **.txt** file, the following data is required for the algorithm:
 
 ### Stages of the algorithm
 
+For dynamic examples, see file **experiments.md**
+
 Each **tau** seconds the movement is interrupted, and the following calculations are performed for each pair of agents:
 
 1. Velocity obstacle (VO) is structed
