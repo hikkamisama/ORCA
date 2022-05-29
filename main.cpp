@@ -5,7 +5,7 @@
 #include <cassert>
 #include <fstream>
 
-extern const double eps = 1e-3;
+extern const double eps = 1e-4;
 extern double tau = 5;
 extern int all_time = 300;
 extern double delta = 1;
@@ -27,12 +27,13 @@ struct frame {
     std::ostream &os;
     frame (const std::string& f_name) : fs(f_name, std::ios::out | std::ios::trunc), os(fs) {}
     void draw(const agent& a) const {
+        int num = a.get_num();
         os 
         << "type AGENT" 
-        << "; num " << a.num 
-        << "; x " << currs[a.num].x 
-        << "; y " << currs[a.num].y 
-        << "; r " << a.r 
+        << "; num " << num
+        << "; x " << currs[num].x 
+        << "; y " << currs[num].y 
+        << "; r " << a.get_r() 
         << std::endl;
     }
     void draw(const end& e) {
@@ -93,7 +94,7 @@ void print(const frame& f) {
     }
     for (int i = 0; i < currs.size(); ++i) {
         for (int j = i + 1; j < currs.size(); ++j) {
-            if ((currs[i] - currs[j]).norm() < agents[i].r + agents[j].r - 4 * eps) {
+            if ((currs[i] - currs[j]).norm() < agents[i].get_r() + agents[j].get_r() - 4 * eps) {
                 std::cerr << i << " and " << j << " collided" << std::endl;
                 // assert(false);
             }
@@ -139,7 +140,7 @@ int main() {
         std::vector<vec> tmp_pos(n);
         std::vector<vec> new_vs(n);
         for (int i = 0; i < n; ++i) {
-            std::vector<line> h_ps = poly_for_vmax(agents[i].v_max * delta, 8);
+            std::vector<line> h_ps = poly_for_vmax(agents[i].get_v_max() * delta, 8);
             for (int j = 0; j < n; ++j) {
                 if (i == j) {
                     continue;
@@ -149,7 +150,7 @@ int main() {
                 auto [u, nu] = find_v_n(
                     find_cas(
                         circle((currs[j] - currs[i]) / tau,
-                        (agents[j].r + agents[i].r) / tau),
+                        (agents[j].get_r() + agents[i].get_r()) / tau),
                     vec(0, 0)),
                     v_curr[i] - v_curr[j]
                 );
@@ -166,7 +167,7 @@ int main() {
             if (v_ideal.norm() < eps) {
                 v_pref = vec(0, 0);
             } else {
-                v_pref = normalize(v_ideal) * agents[i].v_max * delta;
+                v_pref = normalize(v_ideal) * agents[i].get_v_max() * delta;
             }
             std::cout << "Agent " << i << " wants: " << v_pref << "\n";
             if (v_pref.norm() >= v_ideal.norm()) {

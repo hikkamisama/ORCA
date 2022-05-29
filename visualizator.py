@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
-import imageio
+import imageio.v2 as imageio
 import os
 import numpy as np
 plt.figure(figsize=(5, 5))
@@ -17,7 +17,7 @@ def draw_line(x1, x2, y1, y2):
     yans_min = y1 - vy * 10
     yans_max = y2 + vy * 10
     return xans_min, xans_max, yans_min, yans_max
-SPEED = 1
+SPEED = 2
 PERCENT = 0.2
 f = open("test.txt", "r")
 
