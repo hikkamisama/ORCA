@@ -1,6 +1,5 @@
 *.out
-*.cpp
-*.txt
 .vscode
 *.gif
 .DS_Store
+Debug

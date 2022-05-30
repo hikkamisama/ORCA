@@ -1,9 +1,28 @@
 #pragma once
 
 #include <cmath>
-#include "vec.h"
-#include "line.h"
+#include "const.h"
+#include "vec.cpp"
+#include "line.cpp"
 #include "VO.h"
+
+VO find_cas(circle c, vec p) {
+    double px = c.get_p().get_x() - p.get_x();
+    double py = c.get_p().get_y() - p.get_y();
+    double r = c.get_r();
+    double d = std::sqrt(px * px + py * py);
+    double r2 = std::sqrt(std::max(d * d - r * r, 0.));
+    double v = ((r2 * r2 - r * r) / d - d) / 2;
+    double h = std::sqrt(std::max(r * r - v * v, 0.));
+    vec o2o1(px, py);
+    o2o1 = normalize(o2o1);
+    vec ort0201(o2o1.get_y(), -o2o1.get_x());
+    o2o1 = o2o1 * v;
+    ort0201 = ort0201 * h;
+    vec ans1 = c.get_p() + o2o1 + ort0201;
+    vec ans2 = c.get_p() + o2o1 - ort0201;
+    return VO(ans1, ans2, c);
+}
 
 int sign(double a) {
     if (std::abs(a) < eps) {
@@ -21,7 +40,8 @@ bool inside_beams(const vec& v1, const vec& v2, const vec& to_check) {
 
 vec proj_to_line(const line& l, const vec& v) {
     double d = l.into(v);
-    return vec(-l.a * d, -l.b * d) / (l.a * l.a + l.b * l.b);
+    auto [a1, b1, c1] = l.get();
+    return vec(-a1 * d, -b1 * d) / (a1 * a1 + b1 * b1);
 }
 
 std::pair<bool, vec> dot_to_beam(const vec& v_beam, const vec& d_beam, const vec& d) {
@@ -29,7 +49,7 @@ std::pair<bool, vec> dot_to_beam(const vec& v_beam, const vec& d_beam, const vec
     if (mul_cos(v_beam, d_new) < eps) {
         return {true, d_beam - d};
     } else {
-        return {false, proj_to_line(line(-v_beam.y, v_beam.x , 0), d_new)};
+        return {false, proj_to_line(line(-v_beam.get_y(), v_beam.get_x() , 0), d_new)};
     }
 }
 
@@ -89,25 +109,25 @@ vec solve(std::vector<vec> hull, const vec& v) {
 
 std::pair<vec, vec> find_v_n(const VO& vobs, const vec& v) {
     vec u, n;
-    auto [flag1, to_first] = dot_to_beam(vobs.cas1, vobs.c1.p, v);
-    auto [flag2, to_second] = dot_to_beam(vobs.cas2, vobs.c1.p, v);
+    auto [flag1, to_first] = dot_to_beam(vobs.get_cas1(), vobs.get_c1().get_p(), v);
+    auto [flag2, to_second] = dot_to_beam(vobs.get_cas2(), vobs.get_c1().get_p(), v);
     if (flag1 && flag2) {
-        if ((v - vobs.c1.p).norm() < eps) {
-            u = vobs.cas1 - v;
+        if ((v - vobs.get_c1().get_p()).norm() < eps) {
+            u = vobs.get_cas1() - v;
         } else {
-            u = normalize(v - vobs.c1.p) * vobs.c1.r + (vobs.c1.p - v);
+            u = normalize(v - vobs.get_c1().get_p()) * vobs.get_c1().get_r() + (vobs.get_c1().get_p() - v);
         }
     } else {
-        vec need = vobs.cas2;
+        vec need = vobs.get_cas2();
         if (to_first.norm() <= to_second.norm()) {
-            need = vobs.cas1;
+            need = vobs.get_cas1();
         }
         auto [flag3, to_vo] = dot_to_beam(need, vec(0, 0), v);
         u = to_vo;
     }
     if (u.norm() < eps) {
         if (flag1 && flag2) {
-            n = normalize(v - vobs.c1.p);
+            n = normalize(v - vobs.get_c1().get_p());
         } else {
             if (to_first.norm() <= to_second.norm()) {
                 n = normalize(to_first * (-1));
@@ -117,10 +137,10 @@ std::pair<vec, vec> find_v_n(const VO& vobs, const vec& v) {
        }
     } else {
         n = normalize(u);
-        if (!inside_beams(vobs.cas1, vobs.cas2, v - vobs.c1.p)) {
+        if (!inside_beams(vobs.get_cas1(), vobs.get_cas2(), v - vobs.get_c1().get_p())) {
             vec p1(v + n);
             vec p2(v - n);
-            if ((p1 - vobs.c1.p).norm() <= (p2 - vobs.c1.p).norm()) {
+            if ((p1 - vobs.get_c1().get_p()).norm() <= (p2 - vobs.get_c1().get_p()).norm()) {
                 n = n * (-1);
             }
         }
@@ -129,7 +149,7 @@ std::pair<vec, vec> find_v_n(const VO& vobs, const vec& v) {
 }
 
 line struct_half_plane(const vec& v_opt, const vec& u, const vec& n) {
-    return line(n.x, n.y, -mul_cos(v_opt + u / 2, n));
+    return line(n.get_x(), n.get_y(), -mul_cos(v_opt + u / 2, n));
 }
 
 std::vector<line> poly_for_vmax(double v_max, int i_max) {
@@ -141,7 +161,7 @@ std::vector<line> poly_for_vmax(double v_max, int i_max) {
         A = A * v_max;
         B = B * v_max;
         line l(A, B);
-        if (l.c < 0) {
+        if (l.get_c() < 0) {
             l = line(B, A);
         }
         poly.push_back(l);

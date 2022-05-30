@@ -1,23 +1,6 @@
 #pragma once
 
-#include <iostream>
-
-extern double buff = 1.3;
-
-class agent {
-public:
-    agent(int num, double r, double v_max) : num(num), r(r * buff), v_max(v_max) {}
-    agent() = default;
-    friend std::ostream& operator<<(std::ostream& os, const agent& a);
-    friend std::istream& operator>>(std::istream& is, agent& a);
-    int get_num() const;
-    double get_r() const;
-    double get_v_max() const;
-private:
-    int num;
-    double r;
-    double v_max;
-};
+#include "agents.h"
 
 std::ostream& operator<<(std::ostream& os, const agent& a) {
     os << "AGENT №" << a.num << ": with radius: " << a.r << " with v_max: " << a.v_max;

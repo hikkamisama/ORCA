@@ -5,12 +5,7 @@
 #include <cassert>
 #include <fstream>
 
-extern const double eps = 1e-4;
-extern double tau = 5;
-extern int all_time = 300;
-extern double delta = 1;
-
-#include "geom.h"
+#include "geometry/geom.h"
 #include "agents.h"
 
 std::vector<agent> agents;
@@ -31,8 +26,8 @@ struct frame {
         os 
         << "type AGENT" 
         << "; num " << num
-        << "; x " << currs[num].x 
-        << "; y " << currs[num].y 
+        << "; x " << currs[num].get_x() 
+        << "; y " << currs[num].get_y() 
         << "; r " << a.get_r() 
         << std::endl;
     }
@@ -61,17 +56,17 @@ struct frame {
         dd1 = dd1 + currs[i];
         dd2 = dd2 + currs[i];
         os << "type LINE" 
-        << "; x1 " << dd1.x
-        << "; y1 " << dd1.y
-        << "; x2 " << dd2.x
-        << "; y2 " << dd2.y
+        << "; x1 " << dd1.get_x()
+        << "; y1 " << dd1.get_y()
+        << "; x2 " << dd2.get_x()
+        << "; y2 " << dd2.get_y()
         << "; num " << i
         << std::endl;
     }
     void draw(const vec& v, int i) {
         os << "type VEC"
-        << "; x " << v.x
-        << "; y " << v.y
+        << "; x " << v.get_x()
+        << "; y " << v.get_y()
         << "; num " << i
         << std::endl;
     }
@@ -79,8 +74,8 @@ struct frame {
         return;
         for (int j = 0; j < convex.size(); ++j) {
             os << "type VEC"
-            << "; x " << convex[j].x
-            << "; y " << convex[j].y
+            << "; x " << convex[j].get_x()
+            << "; y " << convex[j].get_y()
             << "; num " << i
             << std::endl;
         }
@@ -147,11 +142,10 @@ int main() {
                 }
                 // struct vo i|j
                 // struct half plane i|j
+                circle vo_base((currs[j] - currs[i]) / tau,
+                        (agents[j].get_r() + agents[i].get_r()) / tau);
                 auto [u, nu] = find_v_n(
-                    find_cas(
-                        circle((currs[j] - currs[i]) / tau,
-                        (agents[j].get_r() + agents[i].get_r()) / tau),
-                    vec(0, 0)),
+                    find_cas(vo_base, vec(0, 0)), 
                     v_curr[i] - v_curr[j]
                 );
                 line h_p = struct_half_plane(v_curr[i], u, nu);

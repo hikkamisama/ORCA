@@ -1,30 +1,23 @@
-#pragma once
-#include "vec.h"
-#include <iostream>
-#include <utility>
-#include <tuple>
+#include "line.h"
 
-struct line {
-    double a, b, c;
+double line::get_a() const {
+    return a;
+}
 
-    line() = default;
-    line (double a, double b, double c) : a(a), b(b), c(c) {};
-    line(const vec& A, const vec& B) {
-        a = B.y - A.y;
-        b = A.x - B.x;
-        c = A.y * (B.x - A.x) - A.x * (B.y - A.y);
-    }
-    double tan_line() const;
-    std::tuple<double, double, double> get() const;
-    double into(const vec& d) const;
-};
+double line::get_b() const {
+    return b;
+}
+
+double line::get_c() const {
+    return c;
+}
 
 std::istream& operator>>(std::istream& is, line& l) {
     is >> l.a >> l.b >> l.c;
     return is;
 }
 
-std::ostream& operator<<(std::ostream& os, line& l) {
+std::ostream& operator<<(std::ostream& os, const line& l) {
     os << l.a << "x +" << l.b << "y +" << l.c;
     return os;
 }
@@ -64,13 +57,15 @@ bool equal(const line& l1, const line& l2) {
 }
 
 vec interception(const line& l1, const line& l2) {
-    double x = - ((l1.c * l2.b - l2.c * l1.b) / (l1.a * l2.b - l2.a * l1.b));
-    double y = - ((l1.a * l2.c - l2.a * l1.c) /(l1.a * l2.b - l2.a * l1.b));
+    auto [a1, b1, c1] = l1.get();
+    auto [a2, b2, c2] = l2.get();
+    double x = - ((c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1));
+    double y = - ((a1 * c2 - a2 * c1) /(a1 * b2 - a2 * b1));
     return vec(x, y);
 }
 
 double line::into(const vec& d) const {
-    return a * d.x + b * d.y + c;
+    return a * d.get_x() + b * d.get_y() + c;
 }
 
 double det(const line& l1, const line& l2, const line& l3) {

@@ -1,30 +1,29 @@
-#pragma once
+#include "vec.h"
 
-struct vec {
-    double x, y;
-    vec() = default;
-    vec(double x1, double y1) : x(x1), y(y1) {}
-    vec(const vec& v1): x(v1.x), y(v1.y) {}
-    vec(const vec& a, const vec& b) : x(b.x - a.x), y(b.y - a.y) {}
-    double norm() const;
-};
+double vec::get_x() const {
+    return x;
+}
+
+double vec::get_y() const {
+    return y;
+}
 
 vec operator-(const vec& v1, const vec& v2) {
-    return vec(v1.x - v2.x, v1.y - v2.y);
+    return vec(v1.get_x() - v2.get_x(), v1.get_y() - v2.get_y());
 }
 
 vec operator+(const vec& v1, const vec& v2) {
-    return vec(v1.x + v2.x, v1.y + v2.y);
+    return vec(v1.get_x() + v2.get_x(), v1.get_y() + v2.get_y());
 }
 
 template <class T>
 vec operator*(const vec& v1, T d1) {
-    return vec(v1.x * d1, v1.y * d1);
+    return vec(v1.get_x() * d1, v1.get_y() * d1);
 }
 
 template <class T>
 vec operator/(const vec& v1, T d1) {
-    return vec(v1.x / d1, v1.y / d1);
+    return vec(v1.get_x() / d1, v1.get_y() / d1);
 }
 
 double vec::norm() const {
@@ -36,7 +35,7 @@ vec normalize(const vec& v) {
 }
 
 std::ostream& operator<<(std::ostream& os, const vec& v) {
-    os << "(" << v.x << ", " << v.y << ")";
+    os << "(" << v.get_x() << ", " << v.get_y() << ")";
     return os;
 }
 
@@ -46,9 +45,9 @@ std::istream& operator>>(std::istream& is, vec& v) {
 }
 
 double mul_cos(const vec& a, const vec& b) {
-    return a.x * b.x + a.y * b.y;
+    return a.get_x() * b.get_x() + a.get_y() * b.get_y();
 }
 
 double mul_sin(const vec& a, const vec& b) {
-    return a.x * b.y - a.y * b.x;
+    return a.get_x() * b.get_y() - a.get_y() * b.get_x();
 }
