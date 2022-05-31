@@ -5,3 +5,4 @@
 #define all_time 300
 #define delta 1
 #define buff 1.3f
+#define LOG 0
